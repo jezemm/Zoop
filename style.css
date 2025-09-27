@@ -6,7 +6,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    background: 
+    background:
         radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 177, 153, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(255, 184, 108, 0.2) 0%, transparent 50%),
@@ -18,7 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px;
+    padding: 5px;
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -70,8 +70,8 @@ body::after {
         0 0 0 1px rgba(255, 255, 255, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 20px;
-    max-width: min(95vw, 600px);
-    max-height: 95vh;
+    max-width: min(98vw, 600px);
+    max-height: 98vh;
     width: 100%;
     position: relative;
     overflow: auto;
@@ -364,8 +364,12 @@ body::after {
 }
 
 @media (max-width: 480px) {
+    body {
+        padding: 2px;
+    }
+
     .game-container {
-        padding: 20px;
+        padding: 8px;
     }
     
     #game-canvas {
@@ -387,9 +391,10 @@ body::after {
     }
     
     .game-container {
-        max-width: 98vw;
-        padding: 10px;
-        margin: 5px auto;
+        max-width: 99vw;
+        max-height: 99vh;
+        padding: 5px;
+        margin: 2px auto;
     }
     
     .celebration-text {
@@ -397,6 +402,24 @@ body::after {
     }
     
     .game-board {
+        padding: 4px;
+    }
+
+    .game-header {
+        margin-bottom: 8px;
+    }
+
+    .game-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
+
+    .game-header p {
+        font-size: 0.75rem;
+    }
+
+    .game-stats, .game-settings {
+        margin-bottom: 8px;
         padding: 8px;
     }
 }
