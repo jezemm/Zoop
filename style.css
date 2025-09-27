@@ -70,7 +70,7 @@ body::after {
         0 0 0 1px rgba(255, 255, 255, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 20px;
-    max-width: min(95vw, 500px);
+    max-width: min(95vw, 600px);
     max-height: 95vh;
     width: 100%;
     position: relative;
@@ -370,7 +370,7 @@ body::after {
     
     #game-canvas {
         width: 100%;
-        max-width: 350px;
+        max-width: 90vw;
         height: auto;
     }
     
@@ -387,9 +387,9 @@ body::after {
     }
     
     .game-container {
-        max-width: 380px;
-        padding: 20px;
-        margin: 20px auto;
+        max-width: 95vw;
+        padding: 15px;
+        margin: 10px auto;
     }
     
     .celebration-text {

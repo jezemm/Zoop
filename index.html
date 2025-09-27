@@ -13,6 +13,25 @@
             <p>Draw a path through all numbers in order, visiting every cell</p>
         </header>
         
+        <div class="game-board">
+            <canvas id="game-canvas" width="400" height="400"></canvas>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat">
+                <span class="stat-label">Moves:</span>
+                <span id="move-counter">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Time:</span>
+                <span id="timer">00:00</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Difficulty:</span>
+                <span id="current-difficulty">Medium</span>
+            </div>
+        </div>
+
         <div class="game-settings">
             <div class="setting-group">
                 <label for="difficulty-select">Difficulty:</label>
@@ -34,25 +53,6 @@
                     <option value="10">10x10</option>
                 </select>
             </div>
-        </div>
-        
-        <div class="game-stats">
-            <div class="stat">
-                <span class="stat-label">Moves:</span>
-                <span id="move-counter">0</span>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Time:</span>
-                <span id="timer">00:00</span>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Difficulty:</span>
-                <span id="current-difficulty">Medium</span>
-            </div>
-        </div>
-        
-        <div class="game-board">
-            <canvas id="game-canvas" width="400" height="400"></canvas>
         </div>
         
         <div class="game-controls">
