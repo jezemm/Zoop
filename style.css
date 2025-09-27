@@ -370,7 +370,7 @@ body::after {
     
     #game-canvas {
         width: 100%;
-        max-width: 90vw;
+        max-width: 95vw;
         height: auto;
     }
     
@@ -387,9 +387,9 @@ body::after {
     }
     
     .game-container {
-        max-width: 95vw;
-        padding: 15px;
-        margin: 10px auto;
+        max-width: 98vw;
+        padding: 10px;
+        margin: 5px auto;
     }
     
     .celebration-text {
@@ -397,6 +397,6 @@ body::after {
     }
     
     .game-board {
-        padding: 12px;
+        padding: 8px;
     }
 }

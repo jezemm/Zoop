@@ -3,7 +3,7 @@ class ZipGame {
         this.canvas = document.getElementById('game-canvas');
         this.ctx = this.canvas.getContext('2d');
         this.difficulty = 'medium';
-        this.maxCanvasSize = Math.min(500, Math.min(window.innerWidth, window.innerHeight) * 0.75);
+        this.maxCanvasSize = Math.min(600, Math.min(window.innerWidth, window.innerHeight) * 0.9);
         
         // Initialize default values
         this.gridSize = 6;
@@ -997,7 +997,7 @@ class ZipGame {
         window.addEventListener('resize', () => {
             // Update canvas size based on new window dimensions
             const oldMaxSize = this.maxCanvasSize;
-            this.maxCanvasSize = Math.min(500, Math.min(window.innerWidth, window.innerHeight) * 0.75);
+            this.maxCanvasSize = Math.min(600, Math.min(window.innerWidth, window.innerHeight) * 0.9);
             
             // Only update if size changed significantly
             if (Math.abs(oldMaxSize - this.maxCanvasSize) > 20) {
