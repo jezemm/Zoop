@@ -432,41 +432,33 @@ class ZipGame {
     placeNumberedWaypoints(solutionPath) {
         const diffSettings = this.getDifficultySettings();
         const totalCells = this.gridSize * this.gridSize;
-        
+
         // Scale number of waypoints with board size - more numbers for larger boards
         let numNumbers = Math.floor(totalCells / 6); // More generous ratio
-        
+
         // Ensure minimum numbers based on board size
         const minForBoardSize = Math.max(4, Math.floor(this.gridSize * 0.8));
         const maxForBoardSize = Math.floor(this.gridSize * 1.5);
-        
+
         numNumbers = Math.max(minForBoardSize, Math.min(maxForBoardSize, numNumbers));
         numNumbers = Math.max(diffSettings.minWaypoints, Math.min(diffSettings.maxWaypoints, numNumbers));
-        
-        // Use difficulty-based complexity for waypoint spacing
-        const complexity = diffSettings.pathComplexity;
-        const baseStep = Math.floor(solutionPath.length / numNumbers);
-        
-        for (let i = 0; i < numNumbers; i++) {
-            let pathIndex;
-            
-            if (i === numNumbers - 1) {
-                // Always place the highest number at the END of the solution path
-                pathIndex = solutionPath.length - 1;
-            } else if (complexity > 0.7) {
-                // Higher difficulty: more irregular spacing (but avoid the end)
-                const variance = Math.floor(baseStep * 0.4);
-                const randomOffset = Math.floor(Math.random() * variance * 2) - variance;
-                pathIndex = Math.max(0, Math.min(solutionPath.length - 10, i * baseStep + randomOffset));
-            } else {
-                // Lower difficulty: more regular spacing with some randomness
-                const variance = Math.floor(baseStep * 0.2);
-                const randomOffset = Math.floor(Math.random() * variance * 2) - variance;
-                pathIndex = Math.max(0, Math.min(solutionPath.length - 5, i * baseStep + randomOffset));
-            }
-            
+
+        // Generate waypoint positions with retry mechanism to avoid sequential patterns
+        let attempts = 0;
+        const maxAttempts = 10;
+        let waypointPositions;
+
+        do {
+            waypointPositions = this.generateWaypointPositions(solutionPath, numNumbers, diffSettings);
+            attempts++;
+        } while (this.isSequentialPattern(waypointPositions) && attempts < maxAttempts);
+
+        // Place numbers at the waypoint positions
+        this.numberedCells = [];
+        for (let i = 0; i < waypointPositions.length; i++) {
+            const pathIndex = waypointPositions[i];
             const cell = solutionPath[pathIndex];
-            
+
             this.grid[cell.row][cell.col].number = i + 1;
             this.numberedCells.push({
                 row: cell.row,
@@ -474,9 +466,74 @@ class ZipGame {
                 number: i + 1
             });
         }
-        
+
         // Store the solution path for debugging (optional)
         this.solutionPath = solutionPath;
+    }
+
+    generateWaypointPositions(solutionPath, numNumbers, diffSettings) {
+        const complexity = diffSettings.pathComplexity;
+        const positions = [];
+
+        if (complexity > 0.6) {
+            // Higher difficulty: Use more random distribution with shuffling
+            const segments = Math.floor(solutionPath.length / numNumbers);
+            const segmentVariance = Math.floor(segments * 0.6);
+
+            // Generate initial positions with variance
+            for (let i = 0; i < numNumbers - 1; i++) {
+                const basePos = i * segments;
+                const variance = Math.floor(Math.random() * segmentVariance * 2) - segmentVariance;
+                const position = Math.max(0, Math.min(solutionPath.length - 20, basePos + variance));
+                positions.push(position);
+            }
+
+            // Shuffle the positions to break sequential patterns
+            for (let i = positions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [positions[i], positions[j]] = [positions[j], positions[i]];
+            }
+
+            // Always place final number at the end
+            positions.push(solutionPath.length - 1);
+        } else {
+            // Lower difficulty: Use regular spacing with some randomness
+            const baseStep = Math.floor(solutionPath.length / numNumbers);
+
+            for (let i = 0; i < numNumbers - 1; i++) {
+                const variance = Math.floor(baseStep * 0.3);
+                const randomOffset = Math.floor(Math.random() * variance * 2) - variance;
+                const position = Math.max(0, Math.min(solutionPath.length - 10, i * baseStep + randomOffset));
+                positions.push(position);
+            }
+
+            // Always place final number at the end
+            positions.push(solutionPath.length - 1);
+        }
+
+        // Sort positions to maintain proper number sequence along the path
+        positions.sort((a, b) => a - b);
+
+        return positions;
+    }
+
+    isSequentialPattern(positions) {
+        if (positions.length < 3) return false;
+
+        // Check if positions are too evenly spaced (indicating sequential pattern)
+        const steps = [];
+        for (let i = 1; i < positions.length; i++) {
+            steps.push(positions[i] - positions[i-1]);
+        }
+
+        // Calculate variance in step sizes
+        const avgStep = steps.reduce((a, b) => a + b, 0) / steps.length;
+        const variance = steps.reduce((sum, step) => sum + Math.pow(step - avgStep, 2), 0) / steps.length;
+        const stdDev = Math.sqrt(variance);
+
+        // If standard deviation is too low, positions are too regular (sequential)
+        const threshold = avgStep * 0.2; // 20% of average step
+        return stdDev < threshold;
     }
     
     
