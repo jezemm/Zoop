@@ -476,25 +476,20 @@ class ZipGame {
         const positions = [];
 
         if (complexity > 0.6) {
-            // Higher difficulty: Use more random distribution with shuffling
+            // Higher difficulty: Use more random distribution with larger variance
             const segments = Math.floor(solutionPath.length / numNumbers);
-            const segmentVariance = Math.floor(segments * 0.6);
+            const segmentVariance = Math.floor(segments * 0.8);
 
-            // Generate initial positions with variance
+            // Generate positions with more variance but maintain sequential order
             for (let i = 0; i < numNumbers - 1; i++) {
                 const basePos = i * segments;
                 const variance = Math.floor(Math.random() * segmentVariance * 2) - segmentVariance;
-                const position = Math.max(0, Math.min(solutionPath.length - 20, basePos + variance));
+                const position = Math.max(i > 0 ? positions[i-1] + 1 : 0,
+                                       Math.min(solutionPath.length - (numNumbers - i), basePos + variance));
                 positions.push(position);
             }
 
-            // Shuffle the positions to break sequential patterns
-            for (let i = positions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [positions[i], positions[j]] = [positions[j], positions[i]];
-            }
-
-            // Always place final number at the end
+            // Always place final number at the very end
             positions.push(solutionPath.length - 1);
         } else {
             // Lower difficulty: Use regular spacing with some randomness
@@ -503,16 +498,14 @@ class ZipGame {
             for (let i = 0; i < numNumbers - 1; i++) {
                 const variance = Math.floor(baseStep * 0.3);
                 const randomOffset = Math.floor(Math.random() * variance * 2) - variance;
-                const position = Math.max(0, Math.min(solutionPath.length - 10, i * baseStep + randomOffset));
+                const position = Math.max(i > 0 ? positions[i-1] + 1 : 0,
+                                       Math.min(solutionPath.length - (numNumbers - i), i * baseStep + randomOffset));
                 positions.push(position);
             }
 
             // Always place final number at the end
             positions.push(solutionPath.length - 1);
         }
-
-        // Sort positions to maintain proper number sequence along the path
-        positions.sort((a, b) => a - b);
 
         return positions;
     }
