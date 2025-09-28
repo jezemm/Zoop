@@ -1146,10 +1146,108 @@ class ZipGame {
     updateMoveCounter() {
         document.getElementById('move-counter').textContent = this.moves;
     }
+
+    getRandomCongratulationMessage() {
+        const messages = [
+            "Amazing! You've connected all the dots like a true puzzle master! 🧩",
+            "Fantastic! You're officially a Zoop champion! 🏆",
+            "Incredible! Your brain is clearly operating at maximum efficiency! 🧠⚡",
+            "Outstanding! You've just achieved puzzle perfection! ✨",
+            "Brilliant! You solved that like a boss! 😎",
+            "Spectacular! Your puzzle-solving skills are off the charts! 📈",
+            "Magnificent! You've conquered the grid with style! 💫",
+            "Phenomenal! That was some serious brain power in action! 🔥",
+            "Excellent! You're basically a puzzle wizard now! 🧙‍♂️",
+            "Superb! You've proven that persistence pays off! 💪",
+            "Marvelous! Your strategic thinking is truly impressive! 🎯",
+            "Wonderful! You've turned chaos into beautiful order! 🌟",
+            "Epic! You just crushed that puzzle like a pro! 💥",
+            "Awesome! Your dedication to the path has paid off! 🛤️",
+            "Perfect! You've achieved the ultimate grid mastery! 👑",
+            "Stellar! That solution was pure genius! 💡",
+            "Incredible! You've proved that every cell has its place! 🔗",
+            "Fantastic! Your puzzle radar is clearly finely tuned! 📡",
+            "Amazing! You've just performed some serious grid magic! ✨🔮",
+            "Outstanding! You're the undisputed champion of connected paths! 🎪"
+        ];
+        return messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    showCompletionModal() {
+        // Get final stats
+        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+        const seconds = (elapsed % 60).toString().padStart(2, '0');
+        const timeText = `${minutes}:${seconds}`;
+
+        const difficultyNames = {
+            'easy': 'Easy',
+            'medium': 'Medium',
+            'hard': 'Hard',
+            'extra-hard': 'Extra Hard',
+            'almost-impossible': 'Almost Impossible!'
+        };
+
+        // Populate modal content
+        document.getElementById('congratulation-message').textContent = this.getRandomCongratulationMessage();
+        document.getElementById('final-time').textContent = timeText;
+        document.getElementById('final-moves').textContent = this.moves;
+        document.getElementById('final-difficulty').textContent = difficultyNames[this.difficulty];
+
+        // Show modal with animation
+        const modal = document.getElementById('completion-modal');
+        modal.classList.add('show');
+
+        // Setup modal event listeners if not already done
+        if (!this.modalListenersSetup) {
+            this.setupModalEventListeners();
+            this.modalListenersSetup = true;
+        }
+    }
+
+    setupModalEventListeners() {
+        const modal = document.getElementById('completion-modal');
+        const newGameBtn = document.getElementById('modal-new-game-btn');
+        const closeBtn = document.getElementById('modal-close-btn');
+
+        // New Game button
+        newGameBtn.addEventListener('click', () => {
+            this.hideModal();
+            this.newGame();
+        });
+
+        // Close button
+        closeBtn.addEventListener('click', () => {
+            this.hideModal();
+        });
+
+        // Click outside modal to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.hideModal();
+            }
+        });
+
+        // Escape key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                this.hideModal();
+            }
+        });
+    }
+
+    hideModal() {
+        const modal = document.getElementById('completion-modal');
+        modal.classList.remove('show');
+    }
     
     showVictory() {
-        // Just show celebration animation, no modal
+        // Show celebration animation and modal
         this.showCelebrationAnimation();
+        // Delay modal to let confetti animation start
+        setTimeout(() => {
+            this.showCompletionModal();
+        }, 1000);
     }
     
     

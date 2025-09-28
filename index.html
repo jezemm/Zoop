@@ -60,9 +60,39 @@
             <button id="hint-btn" class="btn btn-secondary">Hint</button>
             <button id="new-game-btn" class="btn btn-primary">New Game</button>
         </div>
-        
+
     </div>
-    
+
+    <!-- Completion Modal -->
+    <div id="completion-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Congratulations! 🎉</h2>
+            </div>
+            <div class="modal-body">
+                <p id="congratulation-message" class="congratulation-text"></p>
+                <div class="completion-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Time:</span>
+                        <span id="final-time" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Moves:</span>
+                        <span id="final-moves" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Difficulty:</span>
+                        <span id="final-difficulty" class="stat-value"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-new-game-btn" class="btn btn-primary">New Game</button>
+                <button id="modal-close-btn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
