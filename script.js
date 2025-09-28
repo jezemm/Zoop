@@ -32,7 +32,10 @@ class ZipGame {
         this.setupEventListeners();
         this.setupSettingsEventListeners();
         this.setupResizeListener();
-        
+
+        // Initialize modal (ensure it's hidden)
+        this.initializeModal();
+
         // Initialize the game
         this.initializeGame();
     }
@@ -1196,6 +1199,10 @@ class ZipGame {
 
         // Show modal with animation
         const modal = document.getElementById('completion-modal');
+        // Reset any inline styles that might interfere
+        modal.style.display = '';
+        modal.style.visibility = '';
+        modal.style.opacity = '';
         modal.classList.add('show');
 
         // Setup modal event listeners if not already done
@@ -1239,6 +1246,18 @@ class ZipGame {
     hideModal() {
         const modal = document.getElementById('completion-modal');
         modal.classList.remove('show');
+    }
+
+    initializeModal() {
+        // Ensure modal starts hidden
+        const modal = document.getElementById('completion-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            // Double-check that it's properly hidden
+            modal.style.display = '';
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
+        }
     }
     
     showVictory() {
