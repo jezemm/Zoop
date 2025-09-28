@@ -578,16 +578,19 @@ class ZipGame {
     
     handleMouseDown(e) {
         if (this.gameWon) return;
-        
+
         const pos = this.getCanvasPosition(e.clientX, e.clientY);
         const cell = this.getCellFromPosition(pos.x, pos.y);
-        
+
         if (cell) {
             // Check if clicking on existing path for backtracking
             const pathIndex = this.getPathIndex(cell);
             if (pathIndex !== -1) {
-                this.backtrackToCell(pathIndex);
-                this.isDrawing = true;
+                // Only allow backtracking from near the end of the path
+                if (this.canBacktrackToIndex(pathIndex)) {
+                    this.backtrackToCell(pathIndex);
+                    this.isDrawing = true;
+                }
             } else if (this.canStartOrContinuePath(cell)) {
                 this.startOrContinuePath(cell);
                 this.isDrawing = true;
@@ -605,8 +608,10 @@ class ZipGame {
             // Check if we're moving over an existing path cell for backtracking
             const pathIndex = this.getPathIndex(cell);
             if (pathIndex !== -1 && pathIndex < this.path.length - 1) {
-                // Backtrack to this position
-                this.backtrackToCell(pathIndex);
+                // Only allow backtracking from near the end of the path
+                if (this.canBacktrackToIndex(pathIndex)) {
+                    this.backtrackToCell(pathIndex);
+                }
             } else if (this.canExtendPath(cell)) {
                 // Extend the path normally
                 this.extendPath(cell);
@@ -691,23 +696,36 @@ class ZipGame {
     }
     
     getPathIndex(cell) {
-        return this.path.findIndex(pathCell => 
+        return this.path.findIndex(pathCell =>
             pathCell.row === cell.row && pathCell.col === cell.col
         );
     }
-    
+
+    canBacktrackToIndex(pathIndex) {
+        if (this.path.length === 0) return false;
+
+        // Calculate how far back from the end this index is
+        const stepsFromEnd = this.path.length - 1 - pathIndex;
+
+        // Allow backtracking only from the last few steps (configurable)
+        // This creates a "backtrack window" - you can only undo recent steps
+        const maxBacktrackSteps = Math.max(3, Math.floor(this.path.length * 0.2)); // At least 3 steps or 20% of path
+
+        return stepsFromEnd <= maxBacktrackSteps;
+    }
+
     backtrackToCell(pathIndex) {
         // Remove cells from path after the clicked index
         const removedCells = this.path.splice(pathIndex + 1);
-        
+
         // Remove those cells from visited set
         removedCells.forEach(cell => {
             this.visitedCells.delete(`${cell.row},${cell.col}`);
         });
-        
+
         // Update current number based on new path end
         this.updateCurrentNumber();
-        
+
         this.draw();
     }
     
